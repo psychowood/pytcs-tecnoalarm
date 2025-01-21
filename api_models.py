@@ -1,14 +1,14 @@
 from datetime import datetime
-from pydantic import BaseModel, RootModel, Field, model_validator, field_validator, computed_field
 from enum import Enum
+from pydantic import BaseModel, RootModel, Field, model_validator, field_validator, computed_field
 
 # from tcsession import Centrale
 
 
 class ZoneStatusEnum(str, Enum):
-    open = "OPEN"
-    closed = "CLOSED"
-    unknown = "UNKNOWN"
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    UNKNOWN = "UNKNOWN"
 
 
 class TcsMonitor(BaseModel):
@@ -56,7 +56,7 @@ class TcsTpstatusZones(TcsTpstatusObject):
     @computed_field
     @property
     def open(self) -> bool:
-        return self.status == ZoneStatusEnum.open
+        return self.status == ZoneStatusEnum.OPEN
 
 
 class TcsTpBase(BaseModel):
@@ -144,7 +144,7 @@ class TcsLog(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def generate_datetime(self, data):
+    def generate_datetime(cls, data):
         dtstr = f"{data['date']} {data["time"]}"
 
         data["datetime"] = datetime.strptime(dtstr, "%d/%m/%y %H:%M:%S")
