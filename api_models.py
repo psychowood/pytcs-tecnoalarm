@@ -5,9 +5,10 @@ from enum import Enum
 # from tcsession import Centrale
 
 
-class ZoneStatusEnum(Enum):
+class ZoneStatusEnum(str, Enum):
     open = "OPEN"
     closed = "CLOSED"
+    unknown = "UNKNOWN"
 
 
 class TcsMonitor(BaseModel):
