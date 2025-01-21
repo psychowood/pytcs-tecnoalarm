@@ -85,6 +85,14 @@ class TcsTpRequest(TcsTpBase):
     def emptylist(cls, v, info):
         return []
 
+    @model_validator(mode="before")
+    @classmethod
+    def get_programs(cls, data):
+        data['programs'] = data['status']['programs']
+        data['zones'] = data['status']['zones']
+
+        return data
+
 
 class TcsTpsList(RootModel):
     root: list[TcsTpReply]
