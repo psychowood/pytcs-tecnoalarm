@@ -1,7 +1,13 @@
-from datetime import datetime, date, time
-from pydantic import BaseModel, RootModel, Field, model_validator, field_validator
+from datetime import datetime
+from pydantic import BaseModel, RootModel, Field, model_validator, field_validator, computed_field
+from enum import Enum
 
 # from tcsession import Centrale
+
+
+class ZoneStatusEnum(Enum):
+    open = "OPEN"
+    closed = "CLOSED"
 
 
 class TcsMonitor(BaseModel):
@@ -44,7 +50,12 @@ class TcsTpstatusZones(TcsTpstatusObject):
     inFail: bool
     inLowBattery: bool
     inSupervision: bool
-    status: str
+    status: ZoneStatusEnum
+
+    @computed_field
+    @property
+    def open(self) -> bool:
+        return self.status == ZoneStatusEnum.open
 
 
 class TcsTpBase(BaseModel):
