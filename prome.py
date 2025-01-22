@@ -24,10 +24,10 @@ for zone in z.root:
     if zone.status == ZoneStatusEnum.UNKNOWN:
         continue
     thisgauge = Gauge(name=PREFIX+"zone_"+zone.description
-                      .replace(" ", "_")
-                      .replace(".", "_")
-                      .replace("-", "_")
-                      .lower(), documentation="Zone")
+        .replace(" ", "_")
+        .replace(".", "_")
+        .replace("-", "_")
+        .lower(), documentation="Zone")
     if zone.allocated:
         prom_zones[zone.description] = thisgauge
 
@@ -36,13 +36,28 @@ for programstatus, programdata in zip(p.root, centrale.tp.status.programs):
     if len(programdata.zones) == 0:
         continue
 
-    clean_name = PREFIX+"program_"+programdata.description.replace(
+    clean_name = PREFIX+programdata.description.replace(
         "-", "_").replace(" ", "_").lower()
 
-    thisprogram = Gauge(name=clean_name,
-                        documentation="Program",
-                        labelnames=["status", "alarm", "free", "memAlarm", "prealarm"])
-    prom_programs[programdata.description] = thisprogram
+    thisprogram = Gauge(name=clean_name+"_status",
+                        documentation="Program Status")
+    prom_programs[programdata.description+"_status"] = thisprogram
+
+    thisprogram = Gauge(name=clean_name+"_alarm",
+                        documentation="Program Alarm")
+    prom_programs[programdata.description+"_alarm"] = thisprogram
+
+    thisprogram = Gauge(name=clean_name+"_free", documentation="Program Free")
+    prom_programs[programdata.description+"_free"] = thisprogram
+
+    thisprogram = Gauge(name=clean_name+"_memAlarm",
+                        documentation="Program Mem Alarm")
+    prom_programs[programdata.description+"_memAlarm"] = thisprogram
+
+    thisprogram = Gauge(name=clean_name+"_prealarm",
+                        documentation="Program Pre Alarm")
+    prom_programs[programdata.description+"_prealarm"] = thisprogram
+
 
 if __name__ == '__main__':
     start_http_server(4567)
@@ -59,11 +74,14 @@ if __name__ == '__main__':
             if len(programdata.zones) == 0:
                 continue
 
-            prom_programs[programdata.description].labels(
-                status=programstatus.status,
-                alarm=programstatus.alarm,
-                free=programstatus.free,
-                memAlarm=programstatus.alarm,
-                prealarm=programstatus.prealarm
-            )
-        print(dt.now())
+            prom_programs[programdata.description +
+                          "_status"].set(programstatus.status)
+            prom_programs[programdata.description +
+                          "_alarm"].set(programstatus.alarm)
+            prom_programs[programdata.description +
+                          "_free"].set(programstatus.free)
+            prom_programs[programdata.description +
+                          "_memAlarm"].set(programstatus.memAlarm)
+            prom_programs[programdata.description +
+                          "_prealarm"].set(programstatus.prealarm)
+        print("Done!")
