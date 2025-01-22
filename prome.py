@@ -28,8 +28,8 @@ for zone in z.root:
                       .replace(".", "_")
                       .replace("-", "_")
                       .lower(), documentation="Zone")
-    thisgauge.labels()
-    prom_zones[zone.description] = thisgauge
+    if zone.allocated:
+        prom_zones[zone.description] = thisgauge
 
 
 for programstatus, programdata in zip(p.root, centrale.tp.status.programs):
