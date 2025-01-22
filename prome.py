@@ -1,4 +1,5 @@
 import time
+from datetime import datetime as dt
 import os
 from prometheus_client import start_http_server, Gauge
 from tcsession import TCSSession
@@ -65,4 +66,4 @@ if __name__ == '__main__':
                 memAlarm=programstatus.alarm,
                 prealarm=programstatus.prealarm
             )
-        print("Done!")
+        print(dt.now())
