@@ -1,6 +1,7 @@
 from datetime import datetime
 import uuid
 import time
+from retry import retry
 from requests import Session
 from objects import HandshakeAnswer
 from api_models import TcsTpsList, TcsMonitor, TcsTpReply, TcsTpstatus, TcsProgram, TcsZones, TcsLogs, TcsTpRequest
@@ -149,12 +150,14 @@ class TCSSession(Session):
             print(r.json())
         return r.ok
 
+    @retry(AssertionError, tries=10, delay=10)
     def get_programs(self):
         r = self.get("/tcs/program")
         assert r.ok
 
         return TcsProgram.model_validate_json(r.text)
 
+    @retry(AssertionError, tries=10, delay=10)
     def get_zones(self):
         r = self.get("/tcs/zone")
         assert r.ok
