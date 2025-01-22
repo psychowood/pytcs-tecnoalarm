@@ -4,6 +4,8 @@ from prometheus_client import start_http_server, Gauge
 from tcsession import TCSSession
 from api_models import ZoneStatusEnum
 
+PREFIX = os.getenv("PREFIX", "")
+
 s = TCSSession(os.getenv("SESSION_KEY"), int(os.getenv("APPID")))
 
 s.get_centrali()
@@ -20,7 +22,7 @@ prom_programs = {}
 for zone in z.root:
     if zone.status == ZoneStatusEnum.UNKNOWN:
         continue
-    thisgauge = Gauge(name=zone.description \
+    thisgauge = Gauge(name=PREFIX+zone.description \
         .replace(" ", "_") \
         .replace(".", "_") \
         .replace("-", "_") \
@@ -32,7 +34,7 @@ for programstatus, programdata in zip(p.root, centrale.tp.status.programs):
     if len(programdata.zones) == 0:
         continue
 
-    clean_name = programdata.description.replace(
+    clean_name = PREFIX+programdata.description.replace(
         "-", "_").replace(" ", "_").lower()
 
     thisprogram = Gauge(name=clean_name+"_status",
