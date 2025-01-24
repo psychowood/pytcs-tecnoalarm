@@ -145,7 +145,7 @@ class TcsLog(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def generate_datetime(cls, data):
-        dtstr = f"{data['date']} {data["time"]}"
+        dtstr = f"{data['date']} {data['time']}"
 
         data["datetime"] = datetime.strptime(dtstr, "%d/%m/%y %H:%M:%S")
 
