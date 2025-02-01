@@ -1,0 +1,6 @@
+services:
+  tecnoalarm:
+    container_name: tecnoalarm
+    build: .
+    env_file: .env
+    restart: unless-stopped
