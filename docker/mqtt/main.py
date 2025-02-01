@@ -4,7 +4,7 @@ import json
 import paho.mqtt.client as mqtt
 from datetime import datetime as dt
 
-from tcsession import TCSSession
+from pytcs_tecnoalarm import TCSSession
 from api_models import ZoneStatusEnum
 
 session_key = os.getenv("SESSION_KEY")

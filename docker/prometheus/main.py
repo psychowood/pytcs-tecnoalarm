@@ -2,8 +2,8 @@ import time
 from datetime import datetime as dt
 import os
 from prometheus_client import start_http_server, Gauge
-from tcsession import TCSSession
-from api_models import ZoneStatusEnum
+from pytcs_tecnoalarm import TCSSession
+from pytcs_tecnoalarm.api_models import ZoneStatusEnum
 
 PREFIX = os.getenv("PREFIX", "")
 

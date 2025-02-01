@@ -3,9 +3,9 @@ import uuid
 import time
 from retry import retry
 from requests import Session
-from objects import HandshakeAnswer
-from api_models import TcsTpsList, TcsMonitor, TcsTpReply, TcsTpstatus, TcsProgram, TcsZones, TcsLogs, TcsTpRequest
-from exceptions import OTPException
+from .objects import HandshakeAnswer
+from .api_models import TcsTpsList, TcsMonitor, TcsTpReply, TcsTpstatus, TcsProgram, TcsZones, TcsLogs, TcsTpRequest
+from .exceptions import OTPException
 
 
 class Centrale():
