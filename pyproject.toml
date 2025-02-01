@@ -1,5 +1,5 @@
 [project]
-name = "pytcs"
+name = "pytcs_tecnoalarm"
 dynamic = ["version"]
 authors = [
   { name="Federico Tabbò", email="federico@tabbo.it" },
@@ -30,15 +30,12 @@ requires = [
 ]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.target.wheel]
-packages = ["pytcs"]
-
 [tool.hatch.version]
 source = "versioningit"
 
-[tool.versioningit]
+[tool.versioningit.vcs]
 # The method key:
-vcs = "git"  # <- The method name
+method = "git"  # <- The method name
 
 # Parameters to pass to the method:
 match = ["v*"]
