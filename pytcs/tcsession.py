@@ -124,8 +124,7 @@ class TCSSession(Session):
         centrali = TcsTpsList.model_validate_json(r.text)
 
         for x in centrali.root:
-            if x.code not in self.centrali:
-                self.centrali[x.code] = Centrale(self, x)
+            self.centrali[x.sn] = Centrale(self, x)
 
     def select_centrale(self, centrale: TcsTpReply):
         self.delete("/tcs/tp")

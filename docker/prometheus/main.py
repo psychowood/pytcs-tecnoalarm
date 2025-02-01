@@ -11,7 +11,7 @@ s = TCSSession(os.getenv("SESSION_KEY"), int(os.getenv("APPID")))
 
 s.get_centrali()
 
-centrale = s.centrali[os.getenv("PIN")]
+centrale = s.centrali[os.getenv("SERIAL")]
 
 s.select_centrale(centrale.tp)
 z = s.get_zones()
