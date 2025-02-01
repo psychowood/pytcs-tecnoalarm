@@ -31,7 +31,7 @@ class Centrale():
     type: int
     zones: list
 
-    def __init__(self, session: "TCSSession", tp:TcsTpReply):
+    def __init__(self, session: "TCSSession", tp: TcsTpReply):
         self.sn = tp.sn
         self.type = tp.type
         self.session = session
@@ -172,3 +172,11 @@ class TCSSession(Session):
     def request(self, method, url, *args, **kwargs):
         url = self.base_url + url
         return super().request(method, url, *args, **kwargs)
+
+    def enable_program(self, prg_id: int) -> None:
+        r = self.put(f"/tcs/program/{prg_id}/on", json=[])
+        assert r.ok
+
+    def disable_program(self, prg_id: int) -> None:
+        r = self.put(f"/tcs/program/{prg_id}/off", json={})
+        assert r.ok
