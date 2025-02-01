@@ -101,8 +101,8 @@ class TcsTpRequest(TcsTpBase):
     @model_validator(mode="before")
     @classmethod
     def get_programs(cls, data):
-        data['programs'] = data['status']['programs']
-        data['zones'] = data['status']['zones']
+        data["programs"] = data["status"]["programs"]
+        data["zones"] = data["status"]["zones"]
 
         return data
 

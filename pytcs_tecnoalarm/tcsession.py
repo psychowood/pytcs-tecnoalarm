@@ -4,15 +4,21 @@ import time
 from retry import retry
 from requests import Session
 from .objects import HandshakeAnswer
-from .api_models import TcsTpsList, TcsMonitor, TcsTpReply, TcsTpstatus, TcsProgram, TcsZones, TcsLogs, TcsTpRequest
+from .api_models import (
+    TcsTpsList,
+    TcsMonitor,
+    TcsTpReply,
+    TcsTpstatus,
+    TcsProgram,
+    TcsZones,
+    TcsLogs,
+    TcsTpRequest,
+)
 from .exceptions import OTPException
 
 
-class Centrale():
-    model_prefix_map = {
-        45: "tp888",
-        38: "tp042"
-    }
+class Centrale:
+    model_prefix_map = {45: "tp888", 38: "tp042"}
     code: str
     codes: list
     description: str
@@ -39,8 +45,7 @@ class Centrale():
         self.monitor = None
 
     def get_monitor(self):
-        r = self.session.get(
-            f"/tcs/monitor/{self.model_prefix_map[self.type]}.{self.sn}")
+        r = self.session.get(f"/tcs/monitor/{self.model_prefix_map[self.type]}.{self.sn}")
         assert r.ok
 
         self.monitor = TcsMonitor.model_validate_json(r.text)
@@ -59,18 +64,13 @@ class TCSSession(Session):
         self.appid = appid
         self.expiration = None
         self.centrali = {}
-        self.headers.update({
-            "lang": "en"
-        })
+        self.headers.update({"lang": "en"})
 
         if token is not None and appid is not None:
             self.re_auth()
 
     def re_auth(self):
-        self.headers.update({
-            "token": self.token,
-            "App-ID": str(self.appid)
-        })
+        self.headers.update({"token": self.token, "App-ID": str(self.appid)})
 
         self.handshake()
 
@@ -100,10 +100,7 @@ class TCSSession(Session):
 
         params = {} if otp is None else {"otp": otp}
 
-        r = self.post("/account/login", params=params, json={
-            "email": email,
-            "hash": password
-        })
+        r = self.post("/account/login", params=params, json={"email": email, "hash": password})
 
         if r.status_code == 202:
             raise OTPException()
@@ -111,10 +108,7 @@ class TCSSession(Session):
             raise ValueError("User or password don't match")
 
         # post token to /app
-        self.headers.update({
-            "TCS-Token": str(uuid.uuid4()),
-            "so": "fa king"
-        })
+        self.headers.update({"TCS-Token": str(uuid.uuid4()), "so": "fa king"})
         self.put("/tcs/app", json=[])
 
     def get_centrali(self):

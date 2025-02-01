@@ -1,3 +1,5 @@
 from .tcsession import TCSSession
 
-__all__ = [ 'TCSSession', ]
+__all__ = [
+    "TCSSession",
+]
