@@ -163,6 +163,14 @@ class TCSSession(Session):
 
         return TcsZones.model_validate_json(r.text)
 
+    @retry(AssertionError, tries=10, delay=10)
+    def get_remotes(self) -> list[bool]:
+        r = self.get("/tcs/remote")
+        assert r.ok
+
+        return r.json()
+
+    @retry(AssertionError, tries=10, delay=10)
     def get_logs(self):
         r = self.get("/tcs/log/0")
         assert r.ok
@@ -179,4 +187,12 @@ class TCSSession(Session):
 
     def disable_program(self, prg_id: int) -> None:
         r = self.put(f"/tcs/program/{prg_id}/off", json={})
+        assert r.ok
+
+    def enable_remote(self, remote_id: int) -> None:
+        r = self.put(f"/tcs/remote/{remote_id}/on", json={})
+        assert r.ok
+
+    def disable_remote(self, remote_id: int) -> None:
+        r = self.put(f"/tcs/remote/{remote_id}/off", json={})
         assert r.ok
