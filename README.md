@@ -3,6 +3,10 @@
 This repo provides code to interface with the cloud services of the "my Tecnoalarm TCS" app.
 Funcionality has been reverse-engineered and may not be complete.
 
+## How to install it
+
+`pip install pytcs-tecnoalarm`
+
 ## How to use it
 
 To use this library you need to authenticate to the cloud service.
@@ -12,7 +16,7 @@ To use this library you need to authenticate to the cloud service.
 Open an interactive prompt and run:
 
 ```python
-from tcsession import TCSSession
+from pytcs_tecnoalarm import TCSSession
 s = TCSSession()
 s.login(email, password)
 ```
@@ -41,7 +45,7 @@ s.appid
 Simply pass your token and appid when instantiating the session
 
 ```python
-from tcsession import TCSSession
+from pytcs_tecnoalarm import TCSSession
 s = TCSSession(token, appid)
 ```
 
