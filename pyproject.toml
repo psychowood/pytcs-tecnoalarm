@@ -1,0 +1,31 @@
+[project]
+name = "pytcs"
+version = "0.0.1"
+authors = [
+  { name="Federico Tabbò", email="federico@tabbo.it" },
+]
+description = "LIbrary to interact with Tecnoalarm TCS app backend"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+license = "GPL-3.0"
+license-files = ["LICENSE"]
+
+dependencies = [
+  "requests",
+  "pydantic",
+  "retry"
+]
+
+[project.urls]
+Homepage = "https://github.com/icovada/pytcs"
+Issues = "https://github.com/icovada/pytcs/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.target.wheel]
+packages = ["pytcs"]
