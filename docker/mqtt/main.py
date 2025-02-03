@@ -9,7 +9,7 @@ from pytcs_tecnoalarm.api_models import ZoneStatusEnum
 
 session_key = os.getenv("SESSION_KEY")
 app_id = int(os.getenv("APPID"))
-pin = os.getenv("PIN")
+serial = os.getenv("SERIAL")
 sleep = int(os.getenv("UPDATE_SLEEP_SECONDS"))
 
 mqtt_host = os.getenv("MQTT_HOST")
@@ -26,7 +26,7 @@ mqtt_topic_program = "programs"
 
 s = TCSSession(session_key, app_id)
 s.get_centrali()
-centrale = s.centrali[pin]
+centrale = s.centrali[serial]
 s.select_centrale(centrale.tp)
 
 
