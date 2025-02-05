@@ -125,16 +125,27 @@ class TCSSession(Session):
         if centrale.status is None:
             r = self.post("/tcs/tp", json=centrale.model_dump())
             assert r.ok
-
+            print("/tcs/tpstatus loop started")
+            total_iterations = 0
+            total_errors = 0
+            last_err = 0
             while True:
+                total_iterations += 1
                 r = self.get("/tcs/tpstatus", params={"quick": "true"})
-                assert r.ok
-
+                #assert r.ok //Removed assert since API is not reliable, needs error skipping
+                if (r.status_code != 200 and r.status_code != 208):
+                    last_err = r.status_code
+                    total_errors += 1
+                if last_err != 0:
+                    print(f"\r/tcs/tpstatus last error  {last_err}; total errors {total_errors} over {total_iterations}", end="")
+                else:
+                    print(f"\r/tcs/tpstatus last error none; total errors {total_errors} over {total_iterations}", end="")
                 if r.status_code == 200:
                     break
                 else:
-                    time.sleep(0.2)
+                    time.sleep(0.5)
 
+            print("`n/tcs/tpstatus loop ended")
             centrale.status = TcsTpstatus.model_validate_json(r.text)
 
         req_data = TcsTpRequest.model_validate(centrale.model_dump())
