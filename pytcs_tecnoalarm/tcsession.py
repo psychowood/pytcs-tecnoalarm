@@ -136,16 +136,13 @@ class TCSSession(Session):
                 if (r.status_code != 200 and r.status_code != 208):
                     last_err = r.status_code
                     total_errors += 1
-                if last_err != 0:
-                    print(f"\r/tcs/tpstatus last error  {last_err}; total errors {total_errors} over {total_iterations}", end="")
-                else:
-                    print(f"\r/tcs/tpstatus last error none; total errors {total_errors} over {total_iterations}", end="")
+                    print(f"/tcs/tpstatus last error  {last_err}; total errors {total_errors} over {total_iterations}")
                 if r.status_code == 200:
                     break
                 else:
                     time.sleep(0.5)
 
-            print("`n/tcs/tpstatus loop ended")
+            print("/tcs/tpstatus loop ended")
             centrale.status = TcsTpstatus.model_validate_json(r.text)
 
         req_data = TcsTpRequest.model_validate(centrale.model_dump())
