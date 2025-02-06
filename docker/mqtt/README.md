@@ -9,7 +9,11 @@ Set up the `.env` file (as the `.env.example`) with all the required variables f
 
 ### Docker Compose
 
-A `docker-compose.yml` file is provided to start up the environment
+A `docker-compose.yml` file is provided to start up the environment.
+
+Build (only the first time): `docker compose build tecnoalarm`
+
+Run: `docker compose up -d`
 
 ## Home Assistant 
 
@@ -17,25 +21,29 @@ MQTT Sensors configuration:
 
 ```yaml
 mqtt:
-  - name: "Room window"
-    unique_id: room_window
-    state_topic: "tecnoalarm/zones/room_window"
-    value_template: "{{ 'ON' if value_json.status == 'OPEN' else 'OFF' }}"
-    device_class: window
-    device:
-      identifiers: tecnoalarm
-      name: Alarm
-      manufacturer: TecnoAlarm
-      model: TP10-42
-
-  - name: "Program Total"
-    unique_id: program_total
-    state_topic: "tecnoalarm/programs/total"
-    value_template: "{{ 'ON' if value_json.status.status != 0 else 'OFF' }}"
-    device_class: running
-    device:
-      identifiers: tecnoalarm
-      name: Alarm
-      manufacturer: TecnoAlarm
-      model: TP10-42
+  - binary_sensor:
+      - name: "Room window"
+        unique_id: room_window
+        state_topic: "tecnoalarm/zones/room_window"
+        value_template: "{{ 'ON' if value_json.status == 'OPEN' else 'OFF' }}"
+        device_class: window
+        device:
+          identifiers: tecnoalarm
+          name: Alarm
+          manufacturer: TecnoAlarm
+          model: TP10-42
+    
+  - switch:
+      - name: "Program Total"
+        unique_id: program_total
+        state_topic: "tecnoalarm/programs/total/status"
+        value_template: "{{ 'ON' if value_json.status != 0 else 'OFF' }}"
+        command_topic: "tecnoalarm/programs/total/set"
+        payload_on: "ON"
+        payload_off: "OFF"
+        device:
+          identifiers: tecnoalarm
+          name: Alarm
+          manufacturer: TecnoAlarm
+          model: TP10-42
 ```
