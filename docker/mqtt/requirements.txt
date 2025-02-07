@@ -1,2 +1,2 @@
 paho-mqtt
-pytcs-tecnoalarm > 0.2
+pytcs-tecnoalarm

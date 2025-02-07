@@ -17,7 +17,7 @@ Run: `docker compose up -d`
 
 ## Home Assistant 
 
-MQTT Sensors configuration:
+MQTT window sensor and a (very basic) program configuration examples:
 
 ```yaml
 mqtt:
@@ -32,15 +32,18 @@ mqtt:
           name: Alarm
           manufacturer: TecnoAlarm
           model: TP10-42
-    
-  - switch:
+
+  - alarm_control_panel:
       - name: "Program Total"
         unique_id: program_total
         state_topic: "tecnoalarm/programs/total/status"
-        value_template: "{{ 'ON' if value_json.status != 0 else 'OFF' }}"
+        value_template: "{{ 'armed_away' if value_json.status != 0 else 'disarmed' }}"
         command_topic: "tecnoalarm/programs/total/set"
-        payload_on: "ON"
-        payload_off: "OFF"
+        supported_features:
+        - arm_away
+        code: !secret alarm_password
+        payload_arm_away: "ON"
+        payload_disarm: "OFF"
         device:
           identifiers: tecnoalarm
           name: Alarm
