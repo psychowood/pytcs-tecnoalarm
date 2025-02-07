@@ -1,0 +1,33 @@
+services:
+  pytcs-tecnoalarm-base:
+    container_name: pytcs-tecnoalarm-base
+    image: pytcs-tecnoalarm-base
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        SRC_REPO: https://github.com/psychowood/pytcs-tecnoalarm/
+  pytcs-tecnoalarm-mqtt:
+    container_name: pytcs-tecnoalarm-mqtt
+    image: pytcs-tecnoalarm-base
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd ./docker/mqtt
+        pip install --no-cache-dir -r requirements.txt
+        python main.py
+    env_file: .env
+    restart: unless-stopped
+  pytcs-tecnoalarm-prometheus:
+    container_name: pytcs-tecnoalarm-prometheus
+    image: pytcs-tecnoalarm-base
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd ./docker/prometheus
+        pip install --no-cache-dir -r requirements.txt
+        python main.py
+    env_file: .env
+    restart: unless-stopped
