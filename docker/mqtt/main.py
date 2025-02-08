@@ -10,15 +10,15 @@ from pytcs_tecnoalarm.api_models import ZoneStatusEnum
 session_key = os.getenv("SESSION_KEY")
 app_id = int(os.getenv("APPID"))
 serial = os.getenv("SERIAL")
-sleep = int(os.getenv("UPDATE_SLEEP_SECONDS"))
+sleep = int(os.getenv("UPDATE_SLEEP_SECONDS","10"))
 
 mqtt_host = os.getenv("MQTT_HOST")
 mqtt_port = int(os.getenv("MQTT_PORT"))
 mqtt_username = os.getenv("MQTT_USERNAME")
 mqtt_password = os.getenv("MQTT_PASSWORD")
-mqtt_qos = int(os.getenv("MQTT_QOS"))
-mqtt_retain = os.getenv("MQTT_RETAIN").lower() == "true"
-programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE").lower() == "true"
+mqtt_qos = int(os.getenv("MQTT_QOS","0"))
+mqtt_retain = os.getenv("MQTT_RETAIN", "false").lower() == "true"
+programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE", "false").lower() == "true"
 
 mqtt_topic_base = "tecnoalarm"
 mqtt_topic_centrale = "centrale"
