@@ -1,4 +1,4 @@
-# MQTT script
+# Prometheus script
 
 This script exposes data through a Prometheus endpoint
 
