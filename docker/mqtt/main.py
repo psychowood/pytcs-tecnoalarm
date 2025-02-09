@@ -20,7 +20,7 @@ mqtt_qos = int(os.getenv("MQTT_QOS"))
 mqtt_retain = os.getenv("MQTT_RETAIN").lower() == "true"
 programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE").lower() == "true"
 
-mqtt_topic_base = "tecnoalarm"
+mqtt_topic_base = "tecnoalarm/" + serial
 mqtt_topic_centrale = "centrale"
 mqtt_topic_zone = "zones"
 mqtt_topic_program = "programs"

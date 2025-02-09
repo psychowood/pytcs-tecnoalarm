@@ -24,7 +24,7 @@ mqtt:
   - binary_sensor:
       - name: "Room window"
         unique_id: room_window
-        state_topic: "tecnoalarm/zones/room_window"
+        state_topic: "tecnoalarm/<serial>/zones/room_window"
         value_template: "{{ 'ON' if value_json.status == 'OPEN' else 'OFF' }}"
         device_class: window
         device:
@@ -36,9 +36,9 @@ mqtt:
   - alarm_control_panel:
       - name: "Program Total"
         unique_id: program_total
-        state_topic: "tecnoalarm/programs/total/status"
+        state_topic: "tecnoalarm/<serial>/programs/total/status"
         value_template: "{{ 'armed_away' if value_json.status != 0 else 'disarmed' }}"
-        command_topic: "tecnoalarm/programs/total/set"
+        command_topic: "tecnoalarm/<serial>/programs/total/set"
         supported_features:
         - arm_away
         code: !secret alarm_password
