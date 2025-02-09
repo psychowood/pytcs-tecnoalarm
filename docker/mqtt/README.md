@@ -50,3 +50,15 @@ mqtt:
           manufacturer: TecnoAlarm
           model: TP10-42
 ```
+
+In order to support more than one centrale, the variable `MULTIPLE_TCS` can be set to `True` and the topics will include the `serial` number as the example below:
+
+```yaml
+mqtt:
+  - binary_sensor:
+      - name: "Room window"
+        unique_id: room_window
+        state_topic: "tecnoalarm/<serial>/zones/room_window"
+        value_template: "{{ 'ON' if value_json.status == 'OPEN' else 'OFF' }}"
+        device_class: window
+```
