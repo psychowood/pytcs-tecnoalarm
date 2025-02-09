@@ -16,11 +16,12 @@ mqtt_host = os.getenv("MQTT_HOST")
 mqtt_port = int(os.getenv("MQTT_PORT"))
 mqtt_username = os.getenv("MQTT_USERNAME")
 mqtt_password = os.getenv("MQTT_PASSWORD")
-mqtt_qos = int(os.getenv("MQTT_QOS"))
-mqtt_retain = os.getenv("MQTT_RETAIN").lower() == "true"
-programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE").lower() == "true"
+mqtt_qos = int(os.getenv("MQTT_QOS", "0"))
+mqtt_retain = os.getenv("MQTT_RETAIN", "true").lower() == "true"
+programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE", "false").lower() == "true"
+multiple_tcs = os.getenv("MULTIPLE_TCS", "false").lower() == "true"
 
-mqtt_topic_base = "tecnoalarm/" + serial
+mqtt_topic_base = "tecnoalarm"
 mqtt_topic_centrale = "centrale"
 mqtt_topic_zone = "zones"
 mqtt_topic_program = "programs"
@@ -64,6 +65,10 @@ if __name__ == "__main__":
     mqttClient = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     mqttClient.username_pw_set(mqtt_username, mqtt_password)
     mqttClient.connect(mqtt_host, mqtt_port, sleep + 60)
+
+    if multiple_tcs:
+        mqtt_topic_base += "/" + serial
+        log("MQTT", "Support multiple tcs")
 
     if programs_allow_enable:
         log("MQTT", "Subscribe to messages")
