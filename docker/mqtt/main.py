@@ -87,6 +87,7 @@ if __name__ == "__main__":
     topic = "{}/{}".format(mqtt_topic_base, mqtt_topic_centrale)
     message = centrale.tp.model_dump()
     message['code'] = 'HIDDEN'
+    message['passphTCS'] = 'HIDDEN'
     message.pop("status", None)
     message = json.dumps(message)
     res = mqttClient.publish(topic, message, mqtt_qos, mqtt_retain)
