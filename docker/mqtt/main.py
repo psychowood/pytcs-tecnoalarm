@@ -6,6 +6,7 @@ from datetime import datetime as dt
 
 from pytcs_tecnoalarm import TCSSession
 from pytcs_tecnoalarm.api_models import ZoneStatusEnum
+from hamqttmodels import HAMQTTModels
 
 session_key = os.getenv("SESSION_KEY")
 app_id = int(os.getenv("APPID"))
@@ -18,6 +19,9 @@ mqtt_username = os.getenv("MQTT_USERNAME")
 mqtt_password = os.getenv("MQTT_PASSWORD")
 mqtt_qos = int(os.getenv("MQTT_QOS", "0"))
 mqtt_retain = os.getenv("MQTT_RETAIN", "true").lower() == "true"
+
+mqtt_ha_autodiscovery_prefix = os.getenv("MQTT_HA_DISCOVERY_PREFIX", None)
+
 programs_allow_enable = os.getenv("PROGRAMS_ALLOW_ENABLE", "false").lower() == "true"
 multiple_tcs = os.getenv("MULTIPLE_TCS", "false").lower() == "true"
 
@@ -92,6 +96,14 @@ if __name__ == "__main__":
     log("client", "publish centrale")
     res = mqttClient.publish(topic, json.dumps(message), mqtt_qos, mqtt_retain)
 
+    # Initialize HAMQTTModels instance
+    if mqtt_ha_autodiscovery_prefix is not None:
+        ha_models = HAMQTTModels(
+            serial_number=serial,
+            system_type=centrale.model_prefix_map[centrale.tp.type],
+            description=centrale.tp.description
+        )
+
     mqttClient.loop_start()
 
     while True:
@@ -108,6 +120,16 @@ if __name__ == "__main__":
             message = json.dumps(zone.__dict__)
             res = mqttClient.publish(topic, message, mqtt_qos, mqtt_retain)
 
+            # Update HAMQTTModels
+            if mqtt_ha_autodiscovery_prefix is not None:
+                ha_models.add_zone(
+                    zone_id=zone.__dict__['idx'],
+                    description=zone.description,
+                    topic=topic,
+                    allocated=zone.allocated
+                )
+
+        # Process programs
         log("pytcs", "get_programs")
         p = s.get_programs()
         log("client", "publish programs")
@@ -116,14 +138,33 @@ if __name__ == "__main__":
                 continue
 
             name = clean_name(programdata.description)
-
-            topic = "{}/{}/{}/info".format(mqtt_topic_base, mqtt_topic_program, name)
+            status_topic = "{}/{}/{}/status".format(mqtt_topic_base, mqtt_topic_program, name)
+            info_topic = "{}/{}/{}/info".format(mqtt_topic_base, mqtt_topic_program, name)
+            
+            # Publish program info and status
             message = json.dumps(programdata.__dict__)
-            res = mqttClient.publish(topic, message, mqtt_qos, mqtt_retain)
+            res = mqttClient.publish(info_topic, message, mqtt_qos, mqtt_retain)
 
-            topic = "{}/{}/{}/status".format(mqtt_topic_base, mqtt_topic_program, name)
             message = json.dumps(programstatus.__dict__)
-            res = mqttClient.publish(topic, message, mqtt_qos, mqtt_retain)
+            res = mqttClient.publish(status_topic, message, mqtt_qos, mqtt_retain)
+            
+            # Update HAMQTTModels
+            if mqtt_ha_autodiscovery_prefix is not None:
+                ha_models.add_program(
+                    program_id=programdata.__dict__['idx'],
+                    description=programdata.description,
+                    topic=status_topic
+                )
+
+        # Handle Home Assistant autodiscovery
+        if mqtt_ha_autodiscovery_prefix is not None:
+            discovery_messages = ha_models.create_all_discovery_messages(include_programs=True)
+            log("autodiscovery payload", json.dumps(discovery_messages))
+            
+            for topic, message in discovery_messages.items():
+                mqttClient.publish(topic, json.dumps(message), mqtt_qos, retain=True)            
+            
+            mqtt_ha_autodiscovery_prefix = None
 
         time.sleep(sleep)
 
