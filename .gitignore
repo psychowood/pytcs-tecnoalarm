@@ -170,3 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .DS_Store
+docker/mqtt/obj.json
+docker/mqtt/autodiscovery.json

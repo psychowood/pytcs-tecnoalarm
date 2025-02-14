@@ -30,10 +30,10 @@ def clean_name(str):
     return str.replace(" ", "_").replace(".", "_").replace("-", "_").lower()
 
 def log(name, message):
-    print(f"{dt.now()} [{name}] {message}")
+    print(f"{dt.now()} [mqtt-{name}] {message}")
 
 def mqtt_on_message(client, userdata, message):
-    log("MQTT", f"Messagge received: '{message.topic}': {message.payload.decode()}")
+    log("listener", f"Messagge received: '{message.topic}': {message.payload.decode()}")
     program_name = message.topic.split("/")[-2]
     program_id = programs_ids.get(program_name, 'error')
     if programs_allow_enable:
@@ -61,17 +61,17 @@ if __name__ == "__main__":
     log("pytcs", "select_centrale")
     s.select_centrale(centrale.tp)
 
-    log("MQTT", "Connect")
+    log("main", "Connect")
     mqttClient = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     mqttClient.username_pw_set(mqtt_username, mqtt_password)
     mqttClient.connect(mqtt_host, mqtt_port, sleep + 60)
 
     if multiple_tcs:
         mqtt_topic_base += "/" + serial
-        log("MQTT", "Support multiple tcs")
+        log("main", "Support multiple tcs")
 
     if programs_allow_enable:
-        log("MQTT", "Subscribe to messages")
+        log("main", "Subscribe to messages")
         mqttClient.on_message = mqtt_on_message
         p = s.get_programs()
         programs_ids = {}
@@ -89,8 +89,8 @@ if __name__ == "__main__":
     message['code'] = 'HIDDEN'
     message['passphTCS'] = 'HIDDEN'
     message.pop("status", None)
-    message = json.dumps(message)
-    res = mqttClient.publish(topic, message, mqtt_qos, mqtt_retain)
+    log("client", "publish centrale")
+    res = mqttClient.publish(topic, json.dumps(message), mqtt_qos, mqtt_retain)
 
     mqttClient.loop_start()
 
@@ -98,6 +98,7 @@ if __name__ == "__main__":
         log("main", "----------------")
         log("pytcs", "get_zones")
         z = s.get_zones()
+        log("client", "publish zones")
         for zone in z.root:
             if zone.status == ZoneStatusEnum.UNKNOWN or not zone.allocated:
                 continue
@@ -109,6 +110,7 @@ if __name__ == "__main__":
 
         log("pytcs", "get_programs")
         p = s.get_programs()
+        log("client", "publish programs")
         for programstatus, programdata in zip(p.root, centrale.tp.status.programs):
             if len(programdata.zones) == 0:
                 continue
