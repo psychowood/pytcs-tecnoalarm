@@ -64,8 +64,8 @@ mqtt:
         device_class: window
 ```
 
-In alternative, Home Assistant MQTT Discovery can be enabled using the environment variable `MQTT_HA_DISCOVERY_PREFIX` (usually set to `homeassistant`). Doiung so would would push all the Programs as different Alarm Panels, and all the zones will appear in a single device in the MQTT integration:
+In alternative, Home Assistant MQTT Discovery can be enabled using the environment variable `MQTT_HA_DISCOVERY_PREFIX` (usually set to `homeassistant`). Doing so would would push all the Programs and Zones in a single device in the MQTT integration:
 
-![mqtt-device](./mqtt-device.png)
+[CENTER]![mqtt-device](./mqtt-device.png)[/CENTER]
 
 If you prefer to map devices manually, the mqtt container will print in the console every device in yaml format for an easy copy/paste in your configuration files.
