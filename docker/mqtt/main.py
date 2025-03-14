@@ -100,7 +100,7 @@ if __name__ == "__main__":
     if mqtt_ha_autodiscovery_prefix is not None:
         ha_models = HAMQTTModels(
             serial_number=serial,
-            system_type=centrale.model_prefix_map[centrale.tp.type],
+            system_type=centrale.model_prefix_map.get(centrale.tp.type, "Unknown"),  # Default to "Unknown"
             description=centrale.tp.description
         )
 
